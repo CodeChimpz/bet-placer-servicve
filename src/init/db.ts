@@ -21,4 +21,4 @@ export const dataSource = new DataSource({
         password: MYSQL_PASSWORD,
         database: MYSQL_DBNAME
     }
-}, logger)
+})
