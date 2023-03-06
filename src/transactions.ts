@@ -1,13 +1,9 @@
-import {logger} from "./init/logger.js";
-import {AmqpBroker} from "mein-etcd-service-registry";
 import {config} from "dotenv";
-import {bets} from "./services/Bet.service.js";
 import {commiter} from "./init/registry.js";
 
 
 config()
 const {
-
     SERVICE_NAME,
     WALLET_SERVICE_NAME,
     WALLET_SERVICE_KEY,

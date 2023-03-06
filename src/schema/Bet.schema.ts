@@ -1,6 +1,6 @@
 import {dataSource} from "../init/db.js";
 import {SchemaDataTypes} from "knex-db-connector";
-import {IOddsObj} from "../ts/types";
+import {IOddsObj} from "../types/types.js";
 
 enum Outcomes {
     win = 'win',
@@ -9,8 +9,8 @@ enum Outcomes {
 }
 
 const moneylineBetSchema = {
-    user:{
-      type: SchemaDataTypes.integer
+    user: {
+        type: SchemaDataTypes.integer
     },
     outcome: {
         type: SchemaDataTypes.string
@@ -24,10 +24,10 @@ const moneylineBetSchema = {
     event: {
         type: SchemaDataTypes.string
     },
-    settled: {
+    confirmed: {
         type: SchemaDataTypes.boolean
     },
-    wom: {
+    won: {
         type: SchemaDataTypes.boolean
     }
 }
@@ -38,9 +38,9 @@ export interface IMoneylineBet {
     team: string
     money: number,
     event: string,
-    settled: boolean,
+    confirmed: boolean,
     won: boolean
 }
 
 
-export const betsRepo = await dataSource.createSchema('MoneylineBets', moneylineBetSchema, true)
+export const betsRepo = await dataSource.createSchema<IMoneylineBet>('MoneylineBets', moneylineBetSchema, true)

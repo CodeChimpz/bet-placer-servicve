@@ -3,7 +3,7 @@ import {registry, sidecar} from "../init/registry.js";
 import {config} from "dotenv";
 import axios from "axios";
 import {logger} from "../init/logger.js";
-import {IGameCrucial, IOddsObj} from "../ts/types.js";
+import {IGameCrucial, IOddsObj} from "../types/types.js";
 import * as assert from "assert";
 
 config()

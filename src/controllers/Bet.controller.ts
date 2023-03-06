@@ -40,23 +40,32 @@ export class BetController {
                 })
                 return
             }
-            //todo: Should be a standalone Service
-            //run TRANSACTION
-            const bet = await this.service.bet({outcome, team, money, event, settled: false, won: false, user})
-            const trans_LEAVE_BET = await leaveBetTransaction({bet, money, user, date: Date()})
-            if(!trans_LEAVE_BET){
-                // await this.service.delete(bet)
-                res.status(404).json({message: 'Error on transaction'})
+            //check if user already made bet
+            const already_bet = await this.service.check(user, event)
+            if (already_bet.length > 0) {
+                res.status(400).json({
+                    message: 'Data irrelevant',
+                    description: 'You already made a moneyline bet on this event'
+                })
                 return
             }
-            res.status(200).json({message: 'Successfully left bet'})
+            //todo: Should be a standalone Service ?
+            //run TRANSACTION
+            const bet = await this.service.bet({outcome, team, money, event, confirmed: false, won: false, user})
+            //todo: pass some descriptive data
+            const trans_LEAVE_BET = await leaveBetTransaction({bet, money, user, date: Date()})
+            if (trans_LEAVE_BET) {
+                res.status(200).json({message: 'Successfully left bet'})
+                return
+            }
+            await this.service.delete(bet._id)
+            res.status(404).json({message: 'Error on transaction'})
+            return
         } catch (e: any) {
             this.logger.app.error(e)
             res.status(500).json({message: 'Server error'})
         }
-
     }
-
 }
 
 export const betsController = new BetController(bets, events, logger)
