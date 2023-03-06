@@ -7,6 +7,7 @@ import {commiter} from "./init/registry.js";
 
 config()
 const {
+
     SERVICE_NAME,
     WALLET_SERVICE_NAME,
     WALLET_SERVICE_KEY,
