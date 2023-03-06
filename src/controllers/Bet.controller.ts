@@ -1,12 +1,11 @@
 import {LoggerService} from "mein-winston-logger";
 import {bets, BetService} from "../services/Bet.service.js";
 import {logger} from "../init/logger.js";
-import {raw, Request, Response} from "express";
+import {Request, Response} from "express";
 import {events, EventServiceRemote} from "../services/Event.service.js";
-import {AmqpBroker} from "mein-etcd-service-registry";
 import {config} from "dotenv";
-import {commiter} from "../init/registry.js";
 import {leaveBetTransaction} from "../transactions.js";
+import {Outcomes} from "../schema/Bet.schema.js";
 
 config()
 const {
@@ -29,7 +28,7 @@ export class BetController {
     async get(req: Request, res: Response) {
         try {
             //get the bet data and the odds on which the bet was placed to check their relevance
-            const {outcome, team, money, event, user} = req.body.bet
+            const {team, money, event, user} = req.body.bet
             const betContext = req.body.betContext
             //check relevance on Event service
             const check = await this.remoteEvents.checkOdds(event, betContext)
@@ -51,16 +50,34 @@ export class BetController {
             }
             //todo: Should be a standalone Service ?
             //run TRANSACTION
-            const bet = await this.service.bet({outcome, team, money, event, confirmed: false, won: false, user})
+            const bet = await this.service.bet({outcome: Outcomes.wait, team, money, event, confirmed: false, user})
             //todo: pass some descriptive data
             const trans_LEAVE_BET = await leaveBetTransaction({bet, money, user, date: Date()})
             if (trans_LEAVE_BET) {
-                res.status(200).json({message: 'Successfully left bet'})
+                const confirmed = await this.service.confirm(bet._id)
+                res.status(200).json({message: 'Successfully left bet', data: confirmed})
                 return
             }
             await this.service.delete(bet._id)
             res.status(404).json({message: 'Error on transaction'})
             return
+        } catch (e: any) {
+            this.logger.app.error(e)
+            res.status(500).json({message: 'Server error'})
+        }
+    }
+
+    async remove(req: Request, res: Response) {
+        try {
+            const id = req.body.id
+            const is_ = this.service.find(id)
+            if (!is_) {
+                res.status(400).json({message: 'Bet not found'})
+            }
+            //todo: Start DELETE BET TRANSACTIONS
+            //moeny back from wallet
+            const deleted_ = await this.service.delete(id)
+            res.status(200).json({message: 'Deleted bet'})
         } catch (e: any) {
             this.logger.app.error(e)
             res.status(500).json({message: 'Server error'})

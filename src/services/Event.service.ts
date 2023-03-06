@@ -1,4 +1,4 @@
-import {EtcdRegistry } from "mein-etcd-service-registry";
+import {EtcdRegistry} from "mein-etcd-service-registry";
 import {registry, sidecar} from "../init/registry.js";
 import {config} from "dotenv";
 import axios from "axios";
@@ -47,20 +47,25 @@ export class EventServiceRemote {
     }
 
     //find won games
-    async getWon(_id: string): Promise<boolean | undefined> {
+    async getWon(): Promise<any[] | undefined> {
         try {
             const get = await sidecar.sendRequest({
                 method: 'post',
                 endpoint: '/games/get',
                 name: String(process.env.EVENT_SERVICE_NAME),
                 params: {API_KEY: String(process.env.EVENT_SERVICE_KEY)}
-            }, {_id: _id})
-            return get.data.data.status === 'final'
+            }, {
+                filters: {
+                    status: 'final'
+                }
+            })
+            return get.data
         } catch (e: any) {
             logger.app.error(e)
             return
         }
     }
+
 }
 
 //

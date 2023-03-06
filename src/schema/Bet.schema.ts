@@ -2,10 +2,11 @@ import {dataSource} from "../init/db.js";
 import {SchemaDataTypes} from "knex-db-connector";
 import {IOddsObj} from "../types/types.js";
 
-enum Outcomes {
+export enum Outcomes {
     win = 'win',
     loss = 'loss',
-    draw = 'draw'
+    draw = 'draw',
+    wait = 'wait'
 }
 
 const moneylineBetSchema = {
@@ -26,20 +27,19 @@ const moneylineBetSchema = {
     },
     confirmed: {
         type: SchemaDataTypes.boolean
-    },
-    won: {
-        type: SchemaDataTypes.boolean
     }
 }
 
 export interface IMoneylineBet {
     user: number,
+    //result on settle
     outcome: Outcomes
+    //team who the bet is placed on
     team: string
     money: number,
     event: string,
+    //if the bet is confirmed by the service
     confirmed: boolean,
-    won: boolean
 }
 
 

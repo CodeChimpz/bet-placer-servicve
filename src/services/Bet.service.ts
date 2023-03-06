@@ -1,5 +1,5 @@
 import {Repository} from "knex-db-connector";
-import {betsRepo, IMoneylineBet} from "../schema/Bet.schema.js";
+import {betsRepo, IMoneylineBet, Outcomes} from "../schema/Bet.schema.js";
 
 
 export class BetService {
@@ -16,15 +16,27 @@ export class BetService {
         })
     }
 
+    async find(id: number) {
+        return this.repo.find({
+            where: (query) => query.where({_id: id})
+        })
+    }
+
     //leave an unconfirmed bet
-    async bet(dataObj: IMoneylineBet){
-        const {outcome, money, team, event} = dataObj
-        return this.repo.create({outcome, money, team, event})
+    async bet(dataObj: IMoneylineBet) {
+        const {outcome, money, team, event, user} = dataObj
+        return this.repo.create({outcome, money, user, team, event})
     }
 
     //confirm the bet after validation
     async confirm(id: number) {
         return this.repo.edit({confirmed: true}, (query: any) =>
+            query.where({_id: id}))
+    }
+
+    //
+    async settle(id: number, outcome: Outcomes) {
+        return this.repo.edit({outcome: outcome}, (query: any) =>
             query.where({_id: id}))
     }
 
@@ -38,9 +50,9 @@ export class BetService {
     }
 
     //delete bet
-    async delete(id: number) {
+    async delete(id: number): Promise<number> {
         return this.repo.delete((query) =>
-            query.where({id: id})
+            query.where({_id: id})
         )
     }
 }
