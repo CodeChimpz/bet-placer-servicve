@@ -1,9 +1,9 @@
-import {EtcdRegistry } from "mein-etcd-service-registry";
+import {EtcdRegistry} from "mein-etcd-service-registry";
 import {registry, sidecar} from "../init/registry.js";
 import {config} from "dotenv";
 import axios from "axios";
 import {logger} from "../init/logger.js";
-import {IGameCrucial, IOddsObj} from "../ts/types.js";
+import {IGameCrucial, IOddsObj} from "../types/types.js";
 import * as assert from "assert";
 
 config()
@@ -31,9 +31,9 @@ export class EventServiceRemote {
             }
             //comapration
             const target = {
-                odds: check.data.data.odds,
-                date: check.data.data.schedule.date,
-                teams: check.data.data.teams
+                odds: check.data.odds,
+                date: check.data.schedule.date,
+                teams: check.data.teams
             }
             assert.deepStrictEqual(data, target, 'Eventdata unequal')
             return true
@@ -47,20 +47,25 @@ export class EventServiceRemote {
     }
 
     //find won games
-    async getWon(_id: string): Promise<boolean | undefined> {
+    async getWon(): Promise<any[] | undefined> {
         try {
             const get = await sidecar.sendRequest({
                 method: 'post',
                 endpoint: '/games/get',
                 name: String(process.env.EVENT_SERVICE_NAME),
                 params: {API_KEY: String(process.env.EVENT_SERVICE_KEY)}
-            }, {_id: _id})
-            return get.data.data.status === 'final'
+            }, {
+                filters: {
+                    status: 'final'
+                }
+            })
+            return get.data
         } catch (e: any) {
             logger.app.error(e)
             return
         }
     }
+
 }
 
 //

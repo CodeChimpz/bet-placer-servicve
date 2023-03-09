@@ -1,3 +1,4 @@
+//Various odds objects
 export interface IMoneyLineOdds {
     awayOdds: number
     homeOdds: number
@@ -15,6 +16,7 @@ export interface ITotalOdds {
     underOdds: number
 }
 
+//complex Odds objects
 export interface IOdds<TOddType> {
     open: TOddType
     current: TOddType
@@ -26,8 +28,9 @@ export type IOddsObj = {
     total: IOdds<ITotalOdds>
 }[]
 
+//
 export interface IGameCrucial {
     odds: IOddsObj,
     date: string,
-    teams: { home: string, away: string }
+    teams: { home: { team: string }, away: { team: string } }
 }

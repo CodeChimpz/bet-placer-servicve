@@ -1,19 +1,17 @@
 import {dataSource} from "../init/db.js";
 import {SchemaDataTypes} from "knex-db-connector";
-import {IOddsObj} from "../ts/types";
+import {IOddsObj} from "../types/types.js";
 
-enum Outcomes {
+export enum Outcomes {
     win = 'win',
     loss = 'loss',
-    draw = 'draw'
+    draw = 'draw',
+    wait = 'wait'
 }
 
 const moneylineBetSchema = {
-    user:{
-      type: SchemaDataTypes.integer
-    },
-    outcome: {
-        type: SchemaDataTypes.string
+    user: {
+        type: SchemaDataTypes.integer
     },
     team: {
         type: SchemaDataTypes.string
@@ -24,23 +22,25 @@ const moneylineBetSchema = {
     event: {
         type: SchemaDataTypes.string
     },
-    settled: {
+    confirmed: {
         type: SchemaDataTypes.boolean
     },
-    wom: {
-        type: SchemaDataTypes.boolean
+    settled: {
+        type: SchemaDataTypes.string
     }
 }
 
 export interface IMoneylineBet {
     user: number,
-    outcome: Outcomes
+    //team who the bet is placed on
     team: string
     money: number,
     event: string,
-    settled: boolean,
-    won: boolean
+    //if the bet is confirmed by the service
+    confirmed: boolean,
+    //result on settle
+    settled: Outcomes
 }
 
 
-export const betsRepo = await dataSource.createSchema('MoneylineBets', moneylineBetSchema, true)
+export const betsRepo = await dataSource.createSchema<IMoneylineBet>('MoneylineBets', moneylineBetSchema, true)

@@ -5,7 +5,8 @@ import {logger} from "./init/logger.js";
 
 export const router = e.Router()
 const endpoints = {
-    '/bet/post': betsController.get,
+    '/bet/post': betsController.create,
+    '/bet/delete': betsController.remove
 }
 registerEndpoint<(req: Request, res: Response) => Promise<void>>(router, endpoints, betsController, {
     cache: true,

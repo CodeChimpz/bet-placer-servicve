@@ -24,7 +24,7 @@
     "axios": "^1.3.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "knex-db-connector": "^1.0.19",
+    "knex-db-connector": "file:../../modules/db-connector",
     "mein-endpoint-registrator": "^1.0.1",
     "mein-etcd-service-registry": "file:../../modules/service-registry",
     "mein-winston-logger": "^1.0.7",
