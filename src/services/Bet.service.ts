@@ -16,16 +16,17 @@ export class BetService {
         })
     }
 
-    async find(id: number) {
-        return this.repo.find({
+    async findOne(id: number) {
+        const res = await this.repo.find({
             where: (query) => query.where({_id: id})
         })
+        return res[0]
     }
 
     //leave an unconfirmed bet
     async bet(dataObj: IMoneylineBet) {
-        const {outcome, money, team, event, user} = dataObj
-        return this.repo.create({outcome, money, user, team, event})
+        const { money, team, event, user} = dataObj
+        return this.repo.create({money, user, team, event})
     }
 
     //confirm the bet after validation
@@ -36,7 +37,7 @@ export class BetService {
 
     //
     async settle(id: number, outcome: Outcomes) {
-        return this.repo.edit({outcome: outcome}, (query: any) =>
+        return this.repo.edit({outcome: outcome, settled: true}, (query: any) =>
             query.where({_id: id}))
     }
 
@@ -44,7 +45,7 @@ export class BetService {
     async getPending() {
         return this.repo.find({
             where: (query) => {
-                return query.where({settled: false})
+                return query.where({settled: null})
             }
         })
     }
@@ -54,6 +55,11 @@ export class BetService {
         return this.repo.delete((query) =>
             query.where({_id: id})
         )
+    }
+
+    async refund(id: number) {
+        return this.repo.edit({refunded: true}, (query: any) =>
+            query.where({_id: id}))
     }
 }
 

@@ -31,9 +31,9 @@ export class EventServiceRemote {
             }
             //comapration
             const target = {
-                odds: check.data.data.odds,
-                date: check.data.data.schedule.date,
-                teams: check.data.data.teams
+                odds: check.data.odds,
+                date: check.data.schedule.date,
+                teams: check.data.teams
             }
             assert.deepStrictEqual(data, target, 'Eventdata unequal')
             return true

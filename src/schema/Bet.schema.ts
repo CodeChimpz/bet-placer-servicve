@@ -13,9 +13,6 @@ const moneylineBetSchema = {
     user: {
         type: SchemaDataTypes.integer
     },
-    outcome: {
-        type: SchemaDataTypes.string
-    },
     team: {
         type: SchemaDataTypes.string
     },
@@ -27,19 +24,22 @@ const moneylineBetSchema = {
     },
     confirmed: {
         type: SchemaDataTypes.boolean
+    },
+    settled: {
+        type: SchemaDataTypes.string
     }
 }
 
 export interface IMoneylineBet {
     user: number,
-    //result on settle
-    outcome: Outcomes
     //team who the bet is placed on
     team: string
     money: number,
     event: string,
     //if the bet is confirmed by the service
     confirmed: boolean,
+    //result on settle
+    settled: Outcomes
 }
 
 

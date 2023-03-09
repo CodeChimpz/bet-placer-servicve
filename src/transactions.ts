@@ -10,7 +10,7 @@ const {
 } = process.env
 
 export const leaveBetTransaction = async (walletData: any) => {
-    return  commiter.twoPCommit([
+    return commiter.twoPCommit([
         {
             endpoint: {
                 endpoint: '/transactions/leave-bet',
@@ -18,6 +18,32 @@ export const leaveBetTransaction = async (walletData: any) => {
                 auth: String(WALLET_SERVICE_KEY)
             },
             data: walletData
+        }
+    ])
+}
+
+export const refundBetTransaction = async (walletData: any) => {
+    return commiter.twoPCommit([
+        {
+            endpoint: {
+                endpoint: '/transactions/leave-refund',
+                name: String(WALLET_SERVICE_NAME),
+                auth: String(WALLET_SERVICE_KEY)
+            },
+            data: walletData
+        }
+    ])
+}
+
+export const settleBetTransaction = async (betData: any) => {
+    return commiter.twoPCommit([
+        {
+            endpoint: {
+                endpoint: '/transactions/resolve-bet',
+                name: String(WALLET_SERVICE_NAME),
+                auth: String(WALLET_SERVICE_KEY)
+            },
+            data: betData
         }
     ])
 }
